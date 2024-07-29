@@ -2,8 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /gameSubmissions/{submission} {
-      allow create: if true;
-      allow read, update, delete: if true;
+      allow create: if false;
+      allow read, update, delete: if false;
     }
   }
 }

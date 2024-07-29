@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import GameTile from "@/components/GameTile";
+import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 
 const games = [
   {
@@ -46,6 +50,36 @@ const games = [
 ];
 
 export default function Home() {
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchGameDetails = async (gameId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/games`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch game details");
+      }
+      const data = await response.json();
+      setGames(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const scrollToGameList = () => {
+    const gameList = document.getElementById("game-list");
+    if (gameList) {
+      gameList.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    fetchGameDetails();
+  }, []);
   return (
     <div className="min-h-screen">
       {/* Banner Section */}
@@ -92,6 +126,7 @@ export default function Home() {
                   "text-white font-bold py-2 px-10 rounded",
                   "transition duration-300"
                 )}
+                onClick={scrollToGameList}
               >
                 Explore
               </button>
@@ -131,12 +166,23 @@ export default function Home() {
       </div>
 
       {/* Game Tiles Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {games.map((game) => (
-            <GameTile key={game.id} game={game} />
-          ))}
-        </div>
+      <div
+        className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen"
+        id="game-list"
+      >
+        {loading ? (
+          <div>
+            <Spinner />
+          </div>
+        ) : error ? (
+          <p>Error fetching games</p>
+        ) : !!games.length ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            {games.map((game) => (
+              <GameTile key={game.id} game={game} />
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

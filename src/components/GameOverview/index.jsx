@@ -2,6 +2,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
+import clsx from 'clsx';
 
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
 
@@ -21,7 +22,7 @@ const GameOverview = ({ game }) => {
                 </div>
             </div>
 
-            <div className='flex gap-3 mt-8 justify-between'>
+            <div className='flex gap-3 mt-8 flex-col md:flex-row justify-between'>
 
                 <div className='max-w-[400px]'>
                     <h2 className="text-gray-600 font-bold text-xl mb-2 truncate">
@@ -32,11 +33,17 @@ const GameOverview = ({ game }) => {
                     </p>
                 </div>
 
-                <button
-                    className='w-86 h-10 text-white  bg-highlight px-10 rounded-lg text-nowrap'
+                <a
+                    href={game.website}
                 >
-                    Learn more
-                </button>
+                    <button
+                        className={clsx(
+                            'text-white bg-highlight md:px-16 w-full py-4 text-xl text-bold rounded-lg text-nowrap'
+                        )}
+                    >
+                        <strong>Check it out</strong>
+                    </button>
+                </a>
             </div>
 
             <hr className='my-8' />
@@ -51,6 +58,7 @@ const GameOverview = ({ game }) => {
                         h4: ({ node, ...props }) => <h4 style={markdownStyles.h4} {...props} />,
                         h5: ({ node, ...props }) => <h5 style={markdownStyles.h5} {...props} />,
                         h6: ({ node, ...props }) => <h6 style={markdownStyles.h6} {...props} />,
+                        a: ({ node, ...props }) => <a className='text-highlight underline' {...props} />,
                     }}
                 >
                     {game.overview}

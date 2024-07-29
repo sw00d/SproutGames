@@ -8,9 +8,11 @@ import clsx from "clsx";
 import Header from "@/components/Header";
 import SimpleMDEditor from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { saveGameDetails } from "@/utils/firestore";
 import SubscriptionTab from "@/components/SubscriptionTab";
 import GameOverview from "@/components/GameOverview";
+import { useRouter } from 'next/navigation';
+
+
 
 export default function NewGame() {
   const [gameDetails, setGameDetails] = useState({
@@ -21,9 +23,12 @@ export default function NewGame() {
     email: "",
     website: "",
   });
-  console.log(gameDetails.overview);
+
   const [showOverviewForm, setShowOverviewForm] = useState(false);
   const overviewFormRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,11 +66,9 @@ export default function NewGame() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/saveGame", {
+      setLoading(true)
+      const response = await fetch("/api/games/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(gameDetails),
       });
 
@@ -74,11 +77,14 @@ export default function NewGame() {
       }
 
       const data = await response.json();
-      console.log("Game saved with ID:", data.id);
-      // You might want to show a success message or redirect the user here
+
+      // redirect user to the game page
+      router.push(`/games/${data.id}`);
     } catch (error) {
       console.error("Error saving game:", error);
       // Handle the error (e.g., show an error message to the user)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -89,7 +95,7 @@ export default function NewGame() {
   }, [showOverviewForm]);
 
 
-  const disableSubmit = !gameDetails.title || !gameDetails.description || !gameDetails.image || !gameDetails.overview || !gameDetails.email || !gameDetails.website;
+  const disableSubmit = loading || !gameDetails.title || !gameDetails.description || !gameDetails.image || !gameDetails.overview || !gameDetails.email || !gameDetails.website;
   return (
     <>
       <Header />
@@ -122,8 +128,8 @@ export default function NewGame() {
           </div>
         </div>
 
-        {showOverviewForm ||
-          (true && (
+        {showOverviewForm && (
+          <>
             <div ref={overviewFormRef} className="flex flex-col lg:flex-row gap-8 mt-8">
               <div className='flex-1 max-w-1/2'>
                 <GameOverviewForm
@@ -139,25 +145,27 @@ export default function NewGame() {
               </div>
 
             </div>
-          ))}
 
-        <div className="flex justify-center items-center mt-10">
+            <div className="flex justify-center items-center mt-10">
 
-          <button
-            onClick={handleSubmit}
-            // disabled={disableSubmit}
-            className={clsx(
-              "font-bold text-xl py-8 px-20 rounded",
-              "transition duration-300",
-              {
-                "bg-highlight text-white": !disableSubmit,
-                "bg-gray-300 text-gray-500 opacity-50": disableSubmit,
-              }
-            )}
-          >
-            Submit Game
-          </button>
-        </div>
+              <button
+                onClick={handleSubmit}
+                // disabled={disableSubmit}
+                className={clsx(
+                  "font-bold text-xl py-8 px-20 rounded",
+                  "transition duration-300",
+                  {
+                    "bg-highlight text-white": !disableSubmit,
+                    "bg-gray-300 text-gray-500 opacity-50": disableSubmit,
+                  }
+                )}
+              >
+                Submit Game
+              </button>
+            </div>
+          </>
+
+        )}
 
       </form>
     </>
@@ -284,7 +292,6 @@ const GameDetailsForm = ({
   onSubmit,
 }) => {
   const fileInputRef = useRef(null);
-
   const triggerFileInput = () => {
     fileInputRef.current.click();
   };

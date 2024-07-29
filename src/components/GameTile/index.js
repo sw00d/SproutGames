@@ -39,11 +39,7 @@ export default function GameTile({ game, disabledClick = false }) {
 
   return (
     <Link
-      href={
-        disabledClick
-          ? ""
-          : `/games/${game.title.toLowerCase().replace(/ /g, "-")}`
-      }
+      href={disabledClick ? "" : `/games/${game.id}`}
       className="block w-full"
     >
       <div
