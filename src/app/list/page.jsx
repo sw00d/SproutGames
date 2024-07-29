@@ -95,7 +95,19 @@ export default function NewGame() {
   }, [showOverviewForm]);
 
 
-  const disableSubmit = loading || !gameDetails.title || !gameDetails.description || !gameDetails.image || !gameDetails.overview || !gameDetails.email || !gameDetails.website;
+  const disableSubmit = useMemo(() => {
+    return (
+      loading
+      || !gameDetails.title
+      || !gameDetails.description
+      || !gameDetails.image
+      || !gameDetails.overview
+      || !gameDetails.email
+      || !gameDetails.website
+      || !validateEmail(gameDetails.email)
+    )
+  }, [loading, gameDetails])
+
   return (
     <>
       <Header />
@@ -150,7 +162,7 @@ export default function NewGame() {
 
               <button
                 onClick={handleSubmit}
-                // disabled={disableSubmit}
+                disabled={disableSubmit}
                 className={clsx(
                   "font-bold text-xl py-8 px-20 rounded",
                   "transition duration-300",
@@ -179,6 +191,7 @@ function GameOverviewForm({
   onPrimaryPhotoSelect,
 }) {
   const fileInputRef = useRef(null);
+  const [emailError, setEmailError] = useState('');
 
   const mdeOptions = useMemo(() => {
     return {
@@ -188,14 +201,20 @@ function GameOverviewForm({
     };
   }, []);
 
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
-  };
 
-  const validateYouTubeUrl = (url) => {
-    const youtubeRegex =
-      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
-    return youtubeRegex.test(url);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === 'email') {
+      if (!value) {
+        setEmailError('Email is required');
+      } else if (!validateEmail(value)) {
+        setEmailError('Please enter a valid email address');
+      } else {
+        setEmailError('');
+      }
+      onInputChange({ target: { name, value } });
+    }
   };
 
   return (
@@ -218,10 +237,11 @@ function GameOverviewForm({
           name="email"
           placeholder="Contact Email"
           value={gameDetails.email}
-          onChange={onInputChange}
+          onChange={handleInputChange}
           className="w-full p-2 border rounded"
           required
         />
+        {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
       </div>
       <div className="mb-4">
         <input
@@ -377,7 +397,10 @@ const GameDetailsForm = ({
   );
 };
 
-
+const validateEmail = (email) => {
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return re.test(String(email).toLowerCase());
+};
 
 const defaultGameOverview = `
 # 🕹️ Game Information
