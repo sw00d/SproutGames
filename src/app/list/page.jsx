@@ -6,13 +6,17 @@ import GameTile from "@/components/GameTile";
 import Image from "next/image";
 import clsx from "clsx";
 import Header from "@/components/Header";
-import SimpleMDEditor from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import SubscriptionTab from "@/components/SubscriptionTab";
 import GameOverview from "@/components/GameOverview";
 import { useRouter } from 'next/navigation';
+import Spinner from "@/components/Spinner";
 
 
+const SimpleMDEditor = dynamic(() => import('react-simplemde-editor'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+});
 
 export default function NewGame() {
   const [gameDetails, setGameDetails] = useState({

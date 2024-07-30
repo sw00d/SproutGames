@@ -1,14 +1,15 @@
-import { randomBytes } from "crypto";
-import admin from "firebase-admin";
+const admin = require("firebase-admin");
+const functions = require("firebase-functions");
+const env = functions.config().app;
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      projectId: env.fb_project_id,
+      clientEmail: env.fb_client_email,
+      privateKey: env.fb_private_key.replace(/\\n/g, "\n"),
     }),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    storageBucket: env.fb_storage_bucket,
   });
 }
 
@@ -16,10 +17,15 @@ const db = admin.firestore();
 
 const storage = admin.storage();
 
-export { db, storage, admin };
+exports.db = db;
+exports.storage = storage;
+exports.admin = admin;
 
 // Util functions
-export async function storeTemporaryGameDetails(subscriptionId, gameDetails) {
+exports.storeTemporaryGameDetails = async function (
+  subscriptionId,
+  gameDetails
+) {
   try {
     await db.collection("temporaryGameDetails").doc(subscriptionId).set({
       gameDetails,
@@ -29,9 +35,9 @@ export async function storeTemporaryGameDetails(subscriptionId, gameDetails) {
     console.error("Error storing temporary game details:", error);
     throw error;
   }
-}
+};
 
-export async function getTemporaryGameDetails(subscriptionId) {
+exports.getTemporaryGameDetails = async function (subscriptionId) {
   try {
     const doc = await db
       .collection("temporaryGameDetails")
@@ -46,13 +52,13 @@ export async function getTemporaryGameDetails(subscriptionId) {
     console.error("Error getting temporary game details:", error);
     throw error;
   }
-}
+};
 
-export async function removeTemporaryGameDetails(subscriptionId) {
+exports.removeTemporaryGameDetails = async function (subscriptionId) {
   try {
     await db.collection("temporaryGameDetails").doc(subscriptionId).delete();
   } catch (error) {
     console.error("Error removing temporary game details:", error);
     throw error;
   }
-}
+};

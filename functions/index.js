@@ -1,14 +1,10 @@
-// functions/index.ts
-import * as functions from "firebase-functions";
-import next from "next";
+const functions = require("firebase-functions");
 
-const dev = process.env.NODE_ENV !== "production";
-const app = next({
-  dev,
-  conf: { distDir: "next" },
-});
-const handle = app.getRequestHandler();
+exports.initiateSubscription =
+  require("./initiate-subscription").initiateSubscription;
 
-export const nextjs = functions.https.onRequest((req, res) => {
-  return app.prepare().then(() => handle(req, res));
-});
+exports.lemonSqueezyWebhook =
+  require("./lemon-squeezy-webhook").lemonSqueezyWebhook;
+
+exports.saveGame = require("./game-submissions").saveGame;
+exports.getGames = require("./game-submissions").getGames;

@@ -1,8 +1,14 @@
-export function generateUniqueId() {
-  return randomBytes(16).toString("hex");
-}
+// import { randomBytes } from "crypto";
+const crypto = require("crypto");
+const functions = require("firebase-functions");
 
-export async function createLemonSqueezyCheckout(
+const env = functions.config().app;
+
+exports.generateUniqueId = function () {
+  return crypto.randomBytes(16).toString("hex");
+};
+
+exports.createLemonSqueezyCheckout = async function (
   subscriptionId,
   variantId = 123
 ) {
@@ -54,4 +60,4 @@ export async function createLemonSqueezyCheckout(
     console.error("Error creating Lemon Squeezy checkout:", error);
     throw error;
   }
-}
+};

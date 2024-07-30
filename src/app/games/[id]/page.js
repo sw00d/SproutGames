@@ -20,7 +20,9 @@ export default function Game({ params }) {
   const fetchGameDetails = async (gameId) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/games?id=${gameId}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/games?id=${gameId}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch game details");
       }

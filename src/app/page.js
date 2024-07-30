@@ -7,48 +7,6 @@ import GameTile from "@/components/GameTile";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
 
-const games = [
-  {
-    id: 1,
-    title: "Pawborough",
-    image: "/pb.avif",
-    description:
-      "Collect, breed, customize, and adventure with felines of all different stripes, colors, and magic.",
-  },
-  {
-    id: 2,
-    title: "Game 2",
-    image: "/pb.avif",
-    description: "Description for Game 2",
-  },
-  {
-    id: 2,
-    title: "Game 2",
-    image: "/pb.avif",
-    description: "Description for Game 2",
-  },
-  {
-    id: 2,
-    title: "Game 2",
-    image: "/pb.avif",
-    description: "Description for Game 2",
-  },
-  {
-    id: 2,
-    title: "Game 2",
-    image: "/pb.avif",
-    description: "Description for Game 2",
-  },
-  {
-    id: 2,
-    title: "Game 2",
-    image: "/pb.avif",
-    description: "Description for Game 2",
-  },
-
-  // Add more games as needed
-];
-
 export default function Home() {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +15,9 @@ export default function Home() {
   const fetchGameDetails = async (gameId) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/games`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/games`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch game details");
       }

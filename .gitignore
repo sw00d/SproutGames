@@ -8,6 +8,8 @@
 
 .env
 
+.firebase/
+
 # testing
 /coverage
 
