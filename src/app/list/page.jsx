@@ -6,13 +6,16 @@ import GameTile from "@/components/GameTile";
 import Image from "next/image";
 import clsx from "clsx";
 import Header from "@/components/Header";
-import SimpleMDEditor from "react-simplemde-editor";
+// import SimpleMDEditor from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import SubscriptionTab from "@/components/SubscriptionTab";
 import GameOverview from "@/components/GameOverview";
 import { useRouter } from 'next/navigation';
 
-
+// const SimpleMDEditor = dynamic(() => import('react-simplemde-editor'), {
+//   ssr: false,
+//   loading: () => <div>Loading...</div>
+// });
 
 export default function NewGame() {
   const [gameDetails, setGameDetails] = useState({
@@ -220,7 +223,7 @@ function GameOverviewForm({
   return (
     <div className="bg-white p-6 rounded-lg shadow w-full">
       <div className="mb-4">
-        <SimpleMDEditor
+        {/* <SimpleMDEditor
           placeholder="Game Overview"
           id="overview"
           value={gameDetails.overview}
@@ -228,7 +231,7 @@ function GameOverviewForm({
             onInputChange({ target: { name: "overview", value } })
           }
           options={mdeOptions}
-        />
+        /> */}
       </div>
       <div className="mb-4 mt-8">
         <input

@@ -1,6 +1,7 @@
-// functions/index.ts
-import * as functions from "firebase-functions";
-import next from "next";
+const functions = require("firebase-functions");
+const next = require("next");
+const admin = require("firebase-admin");
+admin.initializeApp();
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
@@ -9,6 +10,6 @@ const app = next({
 });
 const handle = app.getRequestHandler();
 
-export const nextjs = functions.https.onRequest((req, res) => {
+exports.nextjs = functions.https.onRequest((req, res) => {
   return app.prepare().then(() => handle(req, res));
 });

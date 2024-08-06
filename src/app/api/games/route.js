@@ -3,6 +3,40 @@ import { db } from "@/lib/firebase-admin";
 
 const SERVER_SECRET = process.env.SERVER_SECRET; // Store this in your environment variables
 
+// THIS IS EXAMPLE OF USING STORAGE FOR IMAGES
+// import { getStorage, ref, uploadString } from "firebase/storage";
+
+// export async function POST(request) {
+//   try {
+//     const gameDetails = await request.json();
+//     const storage = getStorage();
+
+//     // Upload image to Firebase Storage
+//     if (gameDetails.image) {
+//       const imageRef = ref(storage, `game-images/${Date.now()}`);
+//       await uploadString(imageRef, gameDetails.image, 'data_url');
+
+//       // Get the download URL
+//       const imageUrl = await getDownloadURL(imageRef);
+
+//       // Replace the image data with the URL in gameDetails
+//       gameDetails.image = imageUrl;
+//     }
+
+//     // Save game details to Firestore
+//     const docRef = await db.collection("gameSubmissions").add(gameDetails);
+
+//     return NextResponse.json({ id: docRef.id }, { status: 200 });
+//   } catch (error) {
+//     console.error("Error saving game:", error);
+//     console.log("error", error);
+
+//     return NextResponse.json(
+//       { error: "Failed to save game details", message: error.message },
+//       { status: 500 }
+//     );
+//   }
+// }
 export async function POST(request) {
   try {
     const gameDetails = await request.json();
