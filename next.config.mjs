@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   pageExtensions: ["js", "jsx", "ts", "tsx"],
-  distDir: "functions/next",
+  distDir: ".next",
   output: "standalone",
   webpack: (config) => {
     config.resolve.alias.canvas = false;
